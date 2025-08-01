@@ -144,7 +144,7 @@ const Login = () => {
             },
           ]}
           onPress={() => {
-            onSignin(SIGN_IN_METHODS.EMAIL)
+            void onSignin(SIGN_IN_METHODS.EMAIL)
           }}
         >
           <Ionicons name="mail" size={24} color={Colors.dark} />
@@ -162,7 +162,7 @@ const Login = () => {
             },
           ]}
           onPress={() => {
-            onSignin(SIGN_IN_METHODS.GOOGLE)
+            void onSignin(SIGN_IN_METHODS.GOOGLE)
           }}
         >
           <Ionicons name="logo-google" size={24} color={Colors.dark} />
@@ -180,7 +180,7 @@ const Login = () => {
             },
           ]}
           onPress={() => {
-            onSignin(SIGN_IN_METHODS.APPLE)
+            void onSignin(SIGN_IN_METHODS.APPLE)
           }}
         >
           <Ionicons name="logo-apple" size={24} color={Colors.dark} />
