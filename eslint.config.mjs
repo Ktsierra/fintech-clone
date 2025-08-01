@@ -1,3 +1,3 @@
-import reactNativeConfig from "@ktsierra/eslint-config/react-native";
+import reactNativeConfig from '@ktsierra/eslint-config/react-native'
 
-export default reactNativeConfig();
+export default reactNativeConfig()
