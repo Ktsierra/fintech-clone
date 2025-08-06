@@ -1,6 +1,5 @@
-import { StyleSheet, Text } from 'react-native'
 import RoundButton from '@/components/RoundButton'
-import { Root, Trigger, Content, Item, ItemTitle, ItemIcon } from 'zeego/dropdown-menu'
+import { Root, Trigger, Content, Item, ItemIcon } from 'zeego/dropdown-menu'
 
 const Dropdown = () => {
   return (
@@ -49,5 +48,3 @@ const Dropdown = () => {
   )
 }
 export default Dropdown
-
-const styles = StyleSheet.create({})
