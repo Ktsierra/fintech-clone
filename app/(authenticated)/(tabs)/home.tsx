@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import Dropdown from '@/components/Dropdown'
 import RoundButton from '@/components/RoundButton'
+import WidgetList from '@/components/SortableList/WidgetList'
 import Colors from '@/constants/Colors'
 import { defaultStyles } from '@/constants/Styles'
 import { useBalanceStore } from '@/store/balanceStore'
@@ -18,7 +19,6 @@ const Home = () => {
       title: 'Added Money',
     }
     runTransaction(transaction)
-    console.log('transaction:', transaction)
   }
 
   return (
@@ -32,7 +32,7 @@ const Home = () => {
 
       <View style={styles.actionRow}>
         <RoundButton title="Add Money" icon="add" onPress={onAddMoney} />
-        <RoundButton title="Exchange" icon="refresh" />
+        <RoundButton title="Exchange" icon="refresh" onPress={clearTransactions} />
         <RoundButton title="Details" icon="list" />
         <Dropdown />
       </View>
@@ -54,9 +54,9 @@ const Home = () => {
           </View>
         ))}
       </View>
-      <View style={{ marginVertical: 20 }}>
-        <RoundButton title="Clear Transactions" icon="trash" onPress={clearTransactions} />
-      </View>
+
+      <Text style={defaultStyles.sectionHeader}>Widgets</Text>
+      <WidgetList />
     </ScrollView>
   )
 }
