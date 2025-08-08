@@ -8,10 +8,20 @@ import { useBalanceStore } from '@/store/balanceStore'
 import { Ionicons } from '@expo/vector-icons'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { useClerk } from '@clerk/clerk-expo'
 
 const Home = () => {
+  const { signOut } = useClerk()
   const { balance, runTransaction, transactions, clearTransactions } = useBalanceStore()
   const headerHeight = useHeaderHeight()
+
+  const onSignOut = async () => {
+    try {
+      await signOut()
+    } catch (error) {
+      console.error('Sign out failed:', error)
+    }
+  }
 
   const onAddMoney = () => {
     const transaction = {
@@ -57,6 +67,7 @@ const Home = () => {
         ))}
       </View>
 
+      <RoundButton title="Sign Out" icon="log-out" onPress={() => onSignOut()} />
       <Text style={defaultStyles.sectionHeader}>Widgets</Text>
       <WidgetList />
     </ScrollView>

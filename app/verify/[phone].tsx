@@ -8,10 +8,10 @@ import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-
 const CELL_COUNT = 6
 
 const Page = () => {
-  const { phone, signin } = useLocalSearchParams<{ phone: string; signin: string }>()
+  const { phone, signed } = useLocalSearchParams<{ phone: string; signed: string }>()
   const [code, setCode] = useState('')
-  const { signIn, isLoaded: isSignInLoaded } = useSignIn()
-  const { isLoaded: isSignUpLoaded, signUp, setActive } = useSignUp()
+  const { signIn, isLoaded: isSignInLoaded, setActive: setActiveSignIn } = useSignIn()
+  const { isLoaded: isSignUpLoaded, signUp, setActive: setActiveSignup } = useSignUp()
 
   const ref = useBlurOnFulfill({ value: code, cellCount: CELL_COUNT })
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -26,7 +26,7 @@ const Page = () => {
         code,
       })
       if (signUpAttempt.status === 'complete') {
-        await setActive({ session: signUp.createdSessionId })
+        await setActiveSignup({ session: signUp.createdSessionId })
       } else {
         console.error(JSON.stringify(signUpAttempt, null, 2))
       }
@@ -36,33 +36,33 @@ const Page = () => {
         Alert.alert('Error', err.errors[0].message)
       }
     }
-  }, [code, setActive, signUp, isSignUpLoaded])
+  }, [code, setActiveSignup, signUp, isSignUpLoaded])
 
   const verifySignIn = useCallback(async () => {
-    if (!isSignInLoaded || !isSignUpLoaded) return
+    if (!isSignInLoaded) return
     try {
       await signIn.attemptFirstFactor({
         strategy: 'phone_code',
         code,
       })
-      await setActive({ session: signIn.createdSessionId })
+      await setActiveSignIn({ session: signIn.createdSessionId })
     } catch (err) {
       console.error('error', JSON.stringify(err, null, 2))
       if (isClerkAPIResponseError(err)) {
         Alert.alert('Error', err.errors[0].message)
       }
     }
-  }, [code, isSignInLoaded, isSignUpLoaded, setActive, signIn])
+  }, [code, isSignInLoaded, setActiveSignIn, signIn])
 
   useEffect(() => {
     if (code.length === 6) {
-      if (signin === 'true') {
+      if (signed === 'true') {
         void verifySignIn()
       } else {
         void verifyCode()
       }
     }
-  }, [code, signin, verifyCode, verifySignIn])
+  }, [code, signed, verifyCode, verifySignIn])
 
   return (
     <View style={defaultStyles.container}>
