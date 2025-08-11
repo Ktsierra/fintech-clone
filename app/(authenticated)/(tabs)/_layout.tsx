@@ -37,28 +37,28 @@ const Layout = () => {
       <Tabs.Screen
         name="invest"
         options={{
-          title: 'Home',
+          title: 'Invest',
           tabBarIcon: ({ size, color }) => <FontAwesome name="line-chart" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="transfers"
         options={{
-          title: 'Home',
+          title: 'Transfers',
           tabBarIcon: ({ size, color }) => <FontAwesome name="exchange" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="lifestyle"
         options={{
-          title: 'Home',
+          title: 'Lifestyle',
           tabBarIcon: ({ size, color }) => <FontAwesome name="th" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="crypto"
         options={{
-          title: 'Home',
+          title: 'Crypto',
           tabBarIcon: ({ size, color }) => <FontAwesome name="bitcoin" size={size} color={color} />,
         }}
       />

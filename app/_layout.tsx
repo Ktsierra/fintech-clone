@@ -12,6 +12,9 @@ import React, { useEffect } from 'react'
 import { TouchableOpacity, Text } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import 'react-native-reanimated'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -49,7 +52,7 @@ const InitialLayout = () => {
     const inAuthGroup = segments[0] === '(authenticated)'
 
     if (isSignedIn && !inAuthGroup) {
-      router.replace('/(authenticated)/(tabs)/home')
+      router.replace('/(authenticated)/(tabs)/crypto')
     } else if (!isSignedIn && inAuthGroup) {
       router.replace('/')
     }
@@ -133,12 +136,14 @@ const InitialLayout = () => {
 
 const RootLayoutNav = () => {
   return (
-    <ClerkProvider tokenCache={tokenCache}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <StatusBar style="light" />
-        <InitialLayout />
-      </GestureHandlerRootView>
-    </ClerkProvider>
+    <QueryClientProvider client={queryClient}>
+      <ClerkProvider tokenCache={tokenCache}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <StatusBar style="light" />
+          <InitialLayout />
+        </GestureHandlerRootView>
+      </ClerkProvider>
+    </QueryClientProvider>
   )
 }
 
