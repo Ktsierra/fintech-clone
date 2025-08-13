@@ -32,7 +32,7 @@ export interface CryptoQuoteData {
   market_cap: number
   market_cap_dominance: number
   fully_diluted_market_cap: number
-  tvl: null
+  tvl: number | null
   last_updated: string
 }
 
@@ -52,6 +52,10 @@ export interface CryptoBase {
   last_updated?: string
 }
 
+type CryptoQuote = {
+  USD: CryptoQuoteData
+} & Partial<Record<Exclude<Coin, 'USD'>, CryptoQuoteData>>
+
 // For listings API data
 export interface CryptoListingData extends CryptoBase {
   max_supply: number | null
@@ -61,7 +65,7 @@ export interface CryptoListingData extends CryptoBase {
   total_supply: number
   cmc_rank: number
   tvl_ratio: null
-  quote: Record<string, CryptoQuoteData>
+  quote: CryptoQuote
 }
 
 // For info API data
@@ -80,6 +84,8 @@ export interface CryptoInfoData extends CryptoBase {
   contract_address: string[]
   self_reported_tags: string[] | null
 }
+
+type Coin = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'AUD' | 'CAD' | 'CHF' | 'CNY' | 'HKD' | 'NZD'
 
 // Union type for both data types
 export type CryptoCurrency = CryptoListingData | CryptoInfoData

@@ -34,12 +34,7 @@ const WidgetList = () => {
         marginBottom: 80,
       }}
     >
-      <SortableList
-        editing={true}
-        onDragEnd={(positions) => {
-          console.log(JSON.stringify(positions, null, 2))
-        }}
-      >
+      <SortableList editing={true}>
         {tiles.map((tile, index) => (
           <Tile onLongPress={() => true} key={tile.id + '-' + index.toString()} id={tile.id} />
         ))}

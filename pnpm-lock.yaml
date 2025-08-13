@@ -15,8 +15,8 @@ importers:
         specifier: ^14.1.0
         version: 14.1.0(expo-font@13.3.2(expo@53.0.20(@babel/core@7.28.0)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.28.0)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       '@ktsierra/eslint-config':
-        specifier: ^2.1.6
-        version: 2.1.6(@eslint/js@9.32.0)(eslint@9.32.0)(globals@14.0.0)(typescript-eslint@8.39.0(eslint@9.32.0)(typescript@5.8.3))
+        specifier: ^2.1.11
+        version: 2.1.11(@eslint/js@9.32.0)(eslint@9.32.0)(globals@14.0.0)(typescript-eslint@8.39.0(eslint@9.32.0)(typescript@5.8.3))
       '@ktsierra/prettier-config':
         specifier: ^1.1.2
         version: 1.1.2(prettier@3.6.2)
@@ -1020,11 +1020,17 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.4':
     resolution: {integrity: sha512-VT2+G1VQs/9oz078bLrYbecdZKs912zQlkelYpuf+SXF+QvZDYJlbx/LSx+meSAwdDFnF8FVXW92AVjjkVmgFw==}
 
+  '@jridgewell/sourcemap-codec@1.5.5':
+    resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
+
   '@jridgewell/trace-mapping@0.3.29':
     resolution: {integrity: sha512-uw6guiW/gcAGPDhLmd77/6lW8QLeiV5RUTsAX46Db6oLhGaVj4lhnPwb184s1bkc8kdVg/+h988dro8GRDpmYQ==}
 
-  '@ktsierra/eslint-config@2.1.6':
-    resolution: {integrity: sha512-U43tGzHHameLjRC1nhAT+2XID1gNdnhO02Pk/bVXwc4D11pq0RhGzpg3lNvAnY2N6yOzluzZHozFh8gE/iKGnA==}
+  '@jridgewell/trace-mapping@0.3.30':
+    resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
+
+  '@ktsierra/eslint-config@2.1.11':
+    resolution: {integrity: sha512-+Tu22nYyPVZKv+QM1X7DrFiPaHWZG0+BGTWlq0Huan9/FTdpfDlaa2ljzc6ge10Y9EE+KZgDrHFweIcurbN7zg==}
     peerDependencies:
       '@eslint/js': ^9.0.0
       eslint: ^9.0.0
@@ -1528,6 +1534,9 @@ packages:
 
   '@types/node@24.2.0':
     resolution: {integrity: sha512-3xyG3pMCq3oYCNg7/ZP+E1ooTaGB4cG8JWRsqqOYQdbWNY4zbaV0Ennrd7stjiJEFZCaybcIgpTjJWHRfBSIDw==}
+
+  '@types/node@24.2.1':
+    resolution: {integrity: sha512-DRh5K+ka5eJic8CjH7td8QpYEV6Zo10gfRkjHCO3weqZHWDtAaSTFtl4+VMqOJ4N5jcuhZ9/l+yy8rVgw7BQeQ==}
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -6421,12 +6430,19 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.4': {}
 
+  '@jridgewell/sourcemap-codec@1.5.5': {}
+
   '@jridgewell/trace-mapping@0.3.29':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.4
 
-  '@ktsierra/eslint-config@2.1.6(@eslint/js@9.32.0)(eslint@9.32.0)(globals@14.0.0)(typescript-eslint@8.39.0(eslint@9.32.0)(typescript@5.8.3))':
+  '@jridgewell/trace-mapping@0.3.30':
+    dependencies:
+      '@jridgewell/resolve-uri': 3.1.2
+      '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@ktsierra/eslint-config@2.1.11(@eslint/js@9.32.0)(eslint@9.32.0)(globals@14.0.0)(typescript-eslint@8.39.0(eslint@9.32.0)(typescript@5.8.3))':
     dependencies:
       '@eslint/js': 9.32.0
       eslint: 9.32.0
@@ -6975,6 +6991,10 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/node@24.2.0':
+    dependencies:
+      undici-types: 7.10.0
+
+  '@types/node@24.2.1':
     dependencies:
       undici-types: 7.10.0
 
@@ -9318,7 +9338,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.2.0
+      '@types/node': 24.2.1
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -10784,7 +10804,7 @@ snapshots:
 
   terser-webpack-plugin@5.3.14(webpack@5.101.0):
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.29
+      '@jridgewell/trace-mapping': 0.3.30
       jest-worker: 27.5.1
       schema-utils: 4.3.2
       serialize-javascript: 6.0.2

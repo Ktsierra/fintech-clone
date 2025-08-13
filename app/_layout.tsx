@@ -9,7 +9,7 @@ import { Link, Stack, useRouter, useSegments } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect } from 'react'
-import { TouchableOpacity, Text } from 'react-native'
+import { TouchableOpacity, Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import 'react-native-reanimated'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -130,6 +130,29 @@ const InitialLayout = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name="(authenticated)/crypto/[id]"
+        options={{
+          title: '',
+          headerLargeTitle: true,
+          headerTransparent: true,
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="arrow-back" size={34} color={Colors.dark} />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <TouchableOpacity>
+                <Ionicons name="notifications-outline" color={Colors.dark} size={30} />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Ionicons name="star-outline" color={Colors.dark} size={30} />
+              </TouchableOpacity>
+            </View>
+          ),
+        }}
+      />
     </Stack>
   )
 }
@@ -139,7 +162,7 @@ const RootLayoutNav = () => {
     <QueryClientProvider client={queryClient}>
       <ClerkProvider tokenCache={tokenCache}>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <StatusBar style="light" />
+          <StatusBar style="auto" />
           <InitialLayout />
         </GestureHandlerRootView>
       </ClerkProvider>
