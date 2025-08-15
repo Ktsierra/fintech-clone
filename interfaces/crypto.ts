@@ -85,6 +85,25 @@ export interface CryptoInfoData extends CryptoBase {
   self_reported_tags: string[] | null
 }
 
+// Gets the ID for Prika
+export interface CoinPrikaType {
+  id: string
+  name: string
+  symbol: string
+  rank: number
+  is_new: boolean
+  is_active: boolean
+  type: string
+}
+
+// Tickers
+export interface CryptoTicker extends Record<string, unknown> {
+  timestamp: string
+  price: number
+  volume_24h: number
+  market_cap: number
+}
+
 type Coin = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'AUD' | 'CAD' | 'CHF' | 'CNY' | 'HKD' | 'NZD'
 
 // Union type for both data types
