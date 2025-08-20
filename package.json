@@ -15,7 +15,7 @@
   "dependencies": {
     "@clerk/clerk-expo": "^2.14.14",
     "@expo/vector-icons": "^14.1.0",
-    "@ktsierra/eslint-config": "^2.1.11",
+    "@ktsierra/eslint-config": "^2.2.0",
     "@ktsierra/prettier-config": "^1.1.2",
     "@react-navigation/elements": "^2.6.2",
     "@react-navigation/native": "^7.1.16",

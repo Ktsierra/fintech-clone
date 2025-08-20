@@ -1,36 +1,122 @@
 /* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
 import Colors from '@/constants/Colors'
-import { useAuth, useUser } from '@clerk/clerk-expo'
-import { center } from '@shopify/react-native-skia'
+import { Ionicons } from '@expo/vector-icons'
+import { useHeaderHeight } from '@react-navigation/elements'
 import { BlurView } from 'expo-blur'
 import { useState } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native'
+import * as ImagePicker from 'expo-image-picker'
+import { useAuth, useUser } from '@clerk/clerk-expo'
 
 const Account = () => {
+  const headerHeight = useHeaderHeight()
   const { user } = useUser()
   const { signOut } = useAuth()
-  const [edit, setEdit] = useState(false)
+  const [edit, setEdit] = useState<boolean>(false)
+  const [firstName, setFirstName] = useState(user?.firstName)
+  const [lastName, setLastName] = useState(user?.lastName)
 
-  // const firstName = user?.firstName ?? ''
-  // const lastName = user?.lastName ?? ''
+  const onSaveUser = async () => {
+    try {
+      await user?.update({ firstName, lastName })
+    } catch (error) {
+      console.log('error:', error)
+    } finally {
+      setEdit(false)
+    }
+  }
 
-  const onSaveUser = () => {}
+  const onCaptureImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 0.75,
+      aspect: [4, 3],
+      base64: true,
+    })
 
-  const onCaptureImage = () => {}
+    if (!result.canceled) {
+      const base64 = `data:image/png;base64,${result.assets[0].base64 ?? ''}`
+      await user?.setProfileImage({
+        file: base64,
+      })
+    }
+  }
 
   return (
-    <BlurView intensity={80} style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-      {user && (
-        <View style={{ alignSelf: 'center' }}>
-          {!edit && (
-            <View style={styles.editRow}>
-              <Text>{user.firstName}</Text>
-              <Text>{user.lastName}</Text>
-            </View>
-          )}
-        </View>
-      )}
+    <BlurView
+      intensity={80}
+      tint="dark"
+      style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', paddingTop: headerHeight }}
+    >
+      <View style={{ alignItems: 'center' }}>
+        <TouchableOpacity style={styles.captureBtn} onPress={() => void onCaptureImage()}>
+          {user.imageUrl && <Image source={{ uri: user.imageUrl }} style={styles.avatar} />}
+        </TouchableOpacity>
+
+        {!edit && (
+          <View style={styles.editRow}>
+            <Text style={{ color: Colors.white, fontSize: 26 }}>
+              {user.firstName} {user.lastName}
+            </Text>
+            <TouchableOpacity onPress={() => setEdit(true)}>
+              <Ionicons name="ellipsis-horizontal" size={24} color={Colors.white} />
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {edit && (
+          <View style={styles.editRow}>
+            <TextInput
+              placeholder="First Name"
+              value={firstName ?? ''}
+              onChangeText={setFirstName}
+              style={[styles.inputField, {}]}
+            />
+            <TextInput
+              placeholder="Last Name"
+              value={lastName ?? ''}
+              onChangeText={setLastName}
+              style={[styles.inputField, {}]}
+            />
+            <TouchableOpacity
+              disabled={(firstName?.length ?? 0) < 1 || (lastName?.length ?? 0) < 1}
+              onPress={() => void onSaveUser()}
+            >
+              <Ionicons name="checkmark-outline" size={24} color={Colors.white} />
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+
+      <View style={styles.actions}>
+        <TouchableOpacity style={styles.btn} onPress={() => void signOut()}>
+          <Ionicons name="log-out" size={24} color={Colors.white} />
+          <Text style={{ color: Colors.white, fontSize: 18 }}>Log out</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btn}>
+          <Ionicons name="person" size={24} color={Colors.white} />
+          <Text style={{ color: Colors.white, fontSize: 18 }}>Account</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btn}>
+          <Ionicons name="bulb" size={24} color={Colors.white} />
+          <Text style={{ color: Colors.white, fontSize: 18 }}>Learn</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btn}>
+          <Ionicons name="megaphone" size={24} color={Colors.white} />
+          <Text style={{ color: Colors.white, fontSize: 18, flex: 1 }}>Inbox</Text>
+          <View
+            style={{
+              backgroundColor: Colors.primary,
+              paddingHorizontal: 10,
+              borderRadius: 10,
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ color: Colors.white, fontSize: 12 }}>14</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </BlurView>
   )
 }
@@ -38,10 +124,44 @@ const Account = () => {
 export default Account
 
 const styles = StyleSheet.create({
+  actions: {
+    backgroundColor: 'rgba(256,256,256,0.1)',
+    borderRadius: 16,
+    gap: 0,
+    margin: 20,
+  },
+  avatar: {
+    backgroundColor: Colors.lightGray,
+    borderRadius: 50,
+    height: 100,
+    width: 100,
+  },
+  btn: {
+    flexDirection: 'row',
+    gap: 20,
+    padding: 14,
+  },
+  captureBtn: {
+    alignSelf: 'center',
+    backgroundColor: Colors.gray,
+    borderRadius: 50,
+    height: 100,
+    justifyContent: 'center',
+    width: 100,
+  },
   editRow: {
     alignItems: 'center',
-    flex: 1,
     flexDirection: 'row',
     gap: 12,
+    marginTop: 20,
+  },
+  inputField: {
+    backgroundColor: Colors.white,
+    borderColor: Colors.gray,
+    borderRadius: 8,
+    borderWidth: 1,
+    fontSize: 26,
+    height: 44,
+    padding: 10,
   },
 })

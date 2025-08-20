@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { type ReactElement } from 'react'
 import Animated, { useAnimatedRef, useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated'
 
@@ -28,6 +29,7 @@ const List = ({ children, editing, onDragEnd }: ListProps) => {
       ref={scrollView}
       contentContainerStyle={{
         height: Math.ceil(children.length / COL) * SIZE,
+        marginTop: 20,
       }}
       showsVerticalScrollIndicator={false}
       bounces={false}

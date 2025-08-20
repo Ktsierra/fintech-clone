@@ -29,19 +29,26 @@ interface ItemProps {
 const Item = ({ children, positions, id, onDragEnd, scrollView, scrollY, editing }: ItemProps) => {
   const inset = useSafeAreaInsets()
   const containerHeight = Dimensions.get('window').height - inset.top - inset.bottom
-  const contentHeight = (Object.keys(positions.value).length / COL) * SIZE
+
+  // DO NOT read positions.value here (render). Initialize neutral values:
   const isGestureActive = useSharedValue(false)
 
-  const position = getPosition(positions.value[id])
-  const translateX = useSharedValue(position.x)
-  const translateY = useSharedValue(position.y)
+  // Initialize at neutral values; the UI thread reaction will set initial positions immediately
+  const translateX = useSharedValue(0)
+  const translateY = useSharedValue(0)
   const context = useSharedValue({ x: 0, y: 0 })
 
+  // Place the tile initially and respond to order changes on the UI thread.
   useAnimatedReaction(
     () => positions.value[id],
-    (newOrder) => {
-      if (!isGestureActive.value) {
-        const pos = getPosition(newOrder)
+    (newOrder, previous) => {
+      const pos = getPosition(newOrder)
+      if (previous === null) {
+        // Initial placement: set immediately (no animation) so there's no visual jump
+        translateX.value = pos.x
+        translateY.value = pos.y
+      } else if (!isGestureActive.value) {
+        // Animate to new position on regular updates
         translateX.value = withTiming(pos.x, animationConfig)
         translateY.value = withTiming(pos.y, animationConfig)
       }
@@ -63,6 +70,13 @@ const Item = ({ children, positions, id, onDragEnd, scrollView, scrollY, editing
       translateX.value = ctx.x + event.translationX
       translateY.value = ctx.y + event.translationY
 
+      // Compute contentHeight and scroll bounds on the UI thread (do not read these on render)
+      const contentHeight = (Object.keys(positions.value).length / COL) * SIZE
+      const lowerBound = scrollY.value
+      const upperBound = lowerBound + containerHeight - SIZE
+      const maxScroll = contentHeight - containerHeight
+      const leftToScrollDown = maxScroll - scrollY.value
+
       // 1. Calculate where the tile should be
       const newOrder = getOrder(translateX.value, translateY.value, Object.keys(positions.value).length - 1)
 
@@ -79,10 +93,6 @@ const Item = ({ children, positions, id, onDragEnd, scrollView, scrollY, editing
       }
 
       // 3. Scroll up and down if necessary
-      const lowerBound = scrollY.value
-      const upperBound = lowerBound + containerHeight - SIZE
-      const maxScroll = contentHeight - containerHeight
-      const leftToScrollDown = maxScroll - scrollY.value
       if (translateY.value < lowerBound) {
         const diff = Math.min(lowerBound - translateY.value, lowerBound)
         scrollY.value -= diff
