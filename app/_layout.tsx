@@ -9,10 +9,11 @@ import { Link, Stack, useRouter, useSegments } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect } from 'react'
-import { TouchableOpacity, Text, View } from 'react-native'
+import { TouchableOpacity, Text, View, ActivityIndicator } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import 'react-native-reanimated'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { UserInactivityProvider } from '@/context/UserInactivity'
 
 const queryClient = new QueryClient()
 
@@ -26,7 +27,7 @@ void SplashScreen.preventAutoHideAsync()
 
 const InitialLayout = () => {
   const [loaded, error] = useFonts({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   })
@@ -52,14 +53,18 @@ const InitialLayout = () => {
     const inAuthGroup = segments[0] === '(authenticated)'
 
     if (isSignedIn && !inAuthGroup) {
-      router.replace('/(authenticated)/(tabs)/crypto')
+      router.replace('/(authenticated)/(tabs)/home')
     } else if (!isSignedIn && inAuthGroup) {
       router.replace('/')
     }
   }, [isSignedIn, isLoaded, segments, router])
 
   if (!loaded || !isLoaded) {
-    return <Text>Loading</Text>
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    )
   }
 
   return (
@@ -153,6 +158,27 @@ const InitialLayout = () => {
           ),
         }}
       />
+      <Stack.Screen
+        name="(authenticated)/(modals)/lock"
+        options={{
+          headerShown: false,
+          animation: 'none',
+        }}
+      />
+      <Stack.Screen
+        name="(authenticated)/(modals)/account"
+        options={{
+          presentation: 'transparentModal',
+          animation: 'fade',
+          title: '',
+          headerTransparent: true,
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="close-outline" size={36} color={Colors.white} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
     </Stack>
   )
 }
@@ -161,10 +187,12 @@ const RootLayoutNav = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <ClerkProvider tokenCache={tokenCache}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <StatusBar style="auto" />
-          <InitialLayout />
-        </GestureHandlerRootView>
+        <UserInactivityProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <StatusBar style="auto" />
+            <InitialLayout />
+          </GestureHandlerRootView>
+        </UserInactivityProvider>
       </ClerkProvider>
     </QueryClientProvider>
   )

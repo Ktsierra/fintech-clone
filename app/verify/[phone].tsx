@@ -4,7 +4,7 @@ import { isClerkAPIResponseError, useSignIn, useSignUp } from '@clerk/clerk-expo
 import { Link, useLocalSearchParams } from 'expo-router'
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
-import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field'
+import VerificationCodeField from '@/components/VerificationCodeField'
 const CELL_COUNT = 6
 
 const Page = () => {
@@ -12,12 +12,6 @@ const Page = () => {
   const [code, setCode] = useState('')
   const { signIn, isLoaded: isSignInLoaded, setActive: setActiveSignIn } = useSignIn()
   const { isLoaded: isSignUpLoaded, signUp, setActive: setActiveSignup } = useSignUp()
-
-  const ref = useBlurOnFulfill({ value: code, cellCount: CELL_COUNT })
-  const [props, getCellOnLayoutHandler] = useClearByFocusCell({
-    value: code,
-    setValue: setCode,
-  })
 
   const verifyCode = useCallback(async () => {
     if (!isSignUpLoaded) return
@@ -69,29 +63,7 @@ const Page = () => {
       <Text style={defaultStyles.header}>6-digit code</Text>
       <Text style={defaultStyles.descriptionText}>Code sent to {phone} unless you already have an account</Text>
 
-      <CodeField
-        ref={ref}
-        {...props}
-        value={code}
-        onChangeText={setCode}
-        cellCount={CELL_COUNT}
-        rootStyle={styles.codeFieldRoot}
-        keyboardType="number-pad"
-        textContentType="oneTimeCode"
-        renderCell={({ index, symbol, isFocused }) => (
-          <Fragment key={index}>
-            <View
-              // Make sure that you pass onLayout={getCellOnLayoutHandler(index)} prop to root component of "Cell"
-              onLayout={getCellOnLayoutHandler(index)}
-              key={index}
-              style={[styles.cellRoot, isFocused && styles.focusCell]}
-            >
-              <Text style={styles.cellText}>{symbol || (isFocused && <Cursor />)}</Text>
-            </View>
-            {index === 2 && <View key={`separator-${index.toString()}`} style={styles.separator} />}
-          </Fragment>
-        )}
-      />
+      <VerificationCodeField value={code} onChangeText={setCode} cellCount={CELL_COUNT} />
 
       <Link href={'/login'} replace asChild>
         <TouchableOpacity>
@@ -102,34 +74,5 @@ const Page = () => {
   )
 }
 
-const styles = StyleSheet.create({
-  cellRoot: {
-    alignItems: 'center',
-    backgroundColor: Colors.lightGray,
-    borderRadius: 8,
-    height: 60,
-    justifyContent: 'center',
-    width: 45,
-  },
-  cellText: {
-    color: Colors.dark,
-    fontSize: 36,
-    textAlign: 'center',
-  },
-  codeFieldRoot: {
-    gap: 12,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginVertical: 20,
-  },
-  focusCell: {
-    paddingBottom: 8,
-  },
-  separator: {
-    alignSelf: 'center',
-    backgroundColor: Colors.gray,
-    height: 2,
-    width: 10,
-  },
-})
+const styles = StyleSheet.create({})
 export default Page
