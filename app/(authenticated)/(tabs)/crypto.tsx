@@ -16,20 +16,22 @@ const Crypto = () => {
     queryFn: () => fetch('/api/listings').then((res) => res.json()),
   })
 
-  const ids = currencies.data?.map((currency) => currency.id).join(',') ?? ''
+  const listings = currencies.data?.data ?? []
+  const ids = listings.map((currency) => currency.id).join(',')
 
   const { data } = useQuery<CoinMarketCapInfoResponse>({
     queryKey: ['info', ids],
     queryFn: () => fetch(`/api/info?ids=${ids}`).then((res) => res.json()),
-    enabled: !!ids,
+    enabled: ids.length > 0,
   })
 
   return (
     <ScrollView style={{ backgroundColor: Colors.background }} contentContainerStyle={{ paddingTop: headerHeight }}>
       <Text style={defaultStyles.sectionHeader}>Latest Crypto</Text>
       <View style={defaultStyles.block}>
-        {currencies.data?.map((currency) => {
-          const { price, percent_change_24h } = currency.quote.USD
+        {listings.map((currency) => {
+          const price = currency.quote.USD.price
+          const percent_change_24h = currency.quote.USD.percent_change_24h
           const isPositiveChange = percent_change_24h > 0
           const changeColor = isPositiveChange ? 'green' : 'red'
           const caretIcon = isPositiveChange ? 'caret-up' : 'caret-down'
@@ -37,7 +39,11 @@ const Crypto = () => {
           return (
             <Link href={`/crypto/${currency.id.toString()}`} key={currency.id} asChild>
               <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 8 }}>
-                <Image source={{ uri: data?.[currency.id]?.logo }} style={{ width: 40, height: 40 }} />
+                {data?.[currency.id]?.logo ? (
+                  <Image source={{ uri: data[currency.id].logo }} style={{ width: 40, height: 40 }} />
+                ) : (
+                  <View style={{ width: 40, height: 40, backgroundColor: Colors.lightGray, borderRadius: 20 }} />
+                )}
                 <View style={{ flex: 1, gap: 6 }}>
                   <Text style={{ fontWeight: 600, color: Colors.dark }}>{currency.name}</Text>
                   <Text style={{ color: Colors.gray }}>{currency.symbol}</Text>

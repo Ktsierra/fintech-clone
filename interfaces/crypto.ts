@@ -106,14 +106,21 @@ export interface CryptoTicker extends Record<string, unknown> {
 
 type Coin = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'AUD' | 'CAD' | 'CHF' | 'CNY' | 'HKD' | 'NZD'
 
-// Union type for both data types
-export type CryptoCurrency = CryptoListingData | CryptoInfoData
+// For listings API response from CoinMarketCap
+export interface CoinMarketCapStatus {
+  timestamp: string
+  error_code: number
+  error_message: string | null
+  elapsed: number
+  credit_count: number
+  notice: string | null
+  total_count?: number
+}
 
-// For listings API (returns array directly)
-export type CoinMarketCapListingsResponse = CryptoListingData[]
+export interface CoinMarketCapListingsResponse {
+  status: CoinMarketCapStatus
+  data: CryptoListingData[]
+}
 
 // For info API (returns object with string keys directly)
 export type CoinMarketCapInfoResponse = Record<string, CryptoInfoData>
-
-// Union type for both response types
-export type CoinMarketCapResponse = CoinMarketCapListingsResponse | CoinMarketCapInfoResponse

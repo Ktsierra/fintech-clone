@@ -1,4 +1,4 @@
-import { type CoinMarketCapResponse, type CoinMarketCapListingsResponse } from '@/interfaces/crypto'
+import { type CryptoListingData, type CoinMarketCapListingsResponse } from '@/interfaces/crypto'
 const API_KEY = process.env.CRYPTO_API_KEY
 
 export async function GET(request: Request): Promise<Response> {
@@ -15,12 +15,11 @@ export async function GET(request: Request): Promise<Response> {
     }
   )
 
-  const json = (await response.json()) as CoinMarketCapListingsResponse
-  const res = json.data
+  const res = (await response.json()) as CoinMarketCapListingsResponse
   return Response.json(res)
 }
 
-const data: CoinMarketCapListingsResponse = [
+const data: CryptoListingData[] = [
   {
     id: 1,
     name: 'Bitcoin',

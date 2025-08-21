@@ -13,7 +13,14 @@ import { SectionList, View, Text, StyleSheet, Image, TouchableOpacity, ScrollVie
 import { CartesianChart, Line, useChartPressState } from 'victory-native'
 import SpaceMono from '@/assets/fonts/SpaceMono-Regular.ttf'
 import * as Haptics from 'expo-haptics'
-import { runOnJS, useDerivedValue, type SharedValue } from 'react-native-reanimated'
+import {
+  runOnJS,
+  useDerivedValue,
+  type SharedValue,
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated'
 
 const categories = ['Overview', 'News', 'Orders', 'Transactions']
 
@@ -34,14 +41,7 @@ export default function Crypto() {
   const { state, isActive } = useChartPressState(INIT_STATE)
   const [currentDiff, setCurrentDiff] = useState(0)
   const [currentDate, setCurrentDate] = useState('')
-
-  useEffect(() => {
-    if (isActive) {
-      Haptics.selectionAsync()
-        .then()
-        .catch((e: unknown) => console.error('Haptics error:', e))
-    }
-  }, [isActive])
+  const colorProgress = useSharedValue(0)
 
   const { data } = useQuery<CoinMarketCapInfoResponse>({
     queryKey: ['info', id],
@@ -55,6 +55,16 @@ export default function Crypto() {
     queryFn: () => fetch(`/api/tickers?name=${coin?.name ?? ''}`).then((res) => res.json()),
     enabled: !!coin?.name,
   })
+
+  useEffect(() => {
+    if (isActive) {
+      Haptics.selectionAsync()
+        .then()
+        .catch((e: unknown) => console.error('Haptics error:', e))
+    } else if (tickers) {
+      setCurrentDiff(tickers[tickers.length - 1].price - tickers[0].price)
+    }
+  }, [isActive, tickers])
 
   const diffValue = useDerivedValue(() => {
     if (!tickers || tickers.length === 0) return 0
