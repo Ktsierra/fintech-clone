@@ -1,29 +1,29 @@
 import { type CoinPrikaType, type CryptoTicker } from '@/interfaces/crypto'
 
 export async function GET(request: Request) {
-  // const url = new URL(request.url)
-  // const name = url.searchParams.get('name')
-  //
-  // if (!name) {
-  //   return Response.json({ error: 'Missing coin name parameter' }, { status: 400 })
-  // }
-  //
-  // const coins: CoinPrikaType[] = (await fetch('https://api.coinpaprika.com/v1/coins').then((res) =>
-  //   res.json()
-  // )) as CoinPrikaType[]
-  // const crypto = coins.find((coin) => coin.name === name)
-  //
-  // if (!crypto) {
-  //   return Response.json({ error: 'Invalid id parameter' }, { status: 400 })
-  // }
-  //
-  // const response = await fetch(
-  //   `https://api.coinpaprika.com/v1/tickers/${crypto.id}/historical?start=2025-01-01&interval=1d`
-  // )
-  //
-  // const res = (await response.json()) as CryptoTicker[]
-  // return Response.json(res)
-  return Response.json(data)
+  const url = new URL(request.url)
+  const name = url.searchParams.get('name')
+
+  if (!name) {
+    return Response.json({ error: 'Missing coin name parameter' }, { status: 400 })
+  }
+
+  const coins: CoinPrikaType[] = (await fetch('https://api.coinpaprika.com/v1/coins').then((res) =>
+    res.json()
+  )) as CoinPrikaType[]
+  const crypto = coins.find((coin) => coin.name === name)
+
+  if (!crypto) {
+    return Response.json({ error: 'Invalid id parameter' }, { status: 400 })
+  }
+
+  const response = await fetch(
+    `https://api.coinpaprika.com/v1/tickers/${crypto.id}/historical?start=2025-01-01&interval=1d`
+  )
+
+  const res = (await response.json()) as CryptoTicker[]
+  return Response.json(res)
+  // return Response.json(data)
 }
 
 const data: CryptoTicker[] = [

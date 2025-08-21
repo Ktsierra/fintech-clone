@@ -4,10 +4,29 @@ import Colors from '@/constants/Colors'
 import { Ionicons } from '@expo/vector-icons'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { BlurView } from 'expo-blur'
-import { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native'
+import { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, type ImageSourcePropType } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { useAuth, useUser } from '@clerk/clerk-expo'
+import { getAppIcon, setAppIcon } from '@howincodes/expo-dynamic-app-icon'
+
+const ICONS = [
+  {
+    name: 'DEFAULT',
+    icon: require('@/assets/images/icon.png') as ImageSourcePropType,
+  },
+  {
+    name: 'dark',
+    icon: require('@/assets/images/icon-dark.png') as ImageSourcePropType,
+  },
+  {
+    name: 'vivid',
+    icon: require('@/assets/images/icon-vivid.png') as ImageSourcePropType,
+  },
+] as const
+
+//type icon needs to be default, dark and vivid
+type Icon = (typeof ICONS)[number]['name']
 
 const Account = () => {
   const headerHeight = useHeaderHeight()
@@ -16,6 +35,16 @@ const Account = () => {
   const [edit, setEdit] = useState<boolean>(false)
   const [firstName, setFirstName] = useState(user?.firstName)
   const [lastName, setLastName] = useState(user?.lastName)
+  const [activeIcon, setActiveIcon] = useState<Icon>('DEFAULT')
+
+  useEffect(() => {
+    const loadCurrentIconPref = () => {
+      const icon = getAppIcon()
+      setActiveIcon(icon)
+    }
+
+    loadCurrentIconPref()
+  }, [])
 
   const onSaveUser = async () => {
     try {
@@ -43,6 +72,12 @@ const Account = () => {
     }
   }
 
+  const onChangeAppIcon = (icon: Icon) => {
+    const name = icon !== 'DEFAULT' ? icon : null
+    setAppIcon(name)
+    setActiveIcon(icon)
+  }
+
   return (
     <BlurView
       intensity={80}
@@ -51,13 +86,13 @@ const Account = () => {
     >
       <View style={{ alignItems: 'center' }}>
         <TouchableOpacity style={styles.captureBtn} onPress={() => void onCaptureImage()}>
-          {user.imageUrl && <Image source={{ uri: user.imageUrl }} style={styles.avatar} />}
+          {user?.imageUrl && <Image source={{ uri: user.imageUrl }} style={styles.avatar} />}
         </TouchableOpacity>
 
         {!edit && (
           <View style={styles.editRow}>
             <Text style={{ color: Colors.white, fontSize: 26 }}>
-              {user.firstName} {user.lastName}
+              {user?.firstName} {user?.lastName}
             </Text>
             <TouchableOpacity onPress={() => setEdit(true)}>
               <Ionicons name="ellipsis-horizontal" size={24} color={Colors.white} />
@@ -116,6 +151,18 @@ const Account = () => {
             <Text style={{ color: Colors.white, fontSize: 12 }}>14</Text>
           </View>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.actions}>
+        {ICONS.map((icon) => (
+          <TouchableOpacity key={icon.name} style={styles.btn} onPress={() => onChangeAppIcon(icon.name)}>
+            <Image source={icon.icon} style={{ width: 30, height: 30, borderRadius: 15 }} />
+            <Text style={{ color: Colors.white, fontSize: 18, flex: 1 }}>
+              {icon.name.charAt(0).toLocaleUpperCase() + icon.name.slice(1).toLocaleLowerCase()}
+            </Text>
+            {activeIcon === icon.name && <Ionicons name="checkmark" size={30} color={Colors.white} />}
+          </TouchableOpacity>
+        ))}
       </View>
     </BlurView>
   )

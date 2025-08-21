@@ -2,23 +2,28 @@ import { type CoinMarketCapInfoResponse } from '@/interfaces/crypto'
 const API_KEY = process.env.CRYPTO_API_KEY
 
 export async function GET(request: Request): Promise<Response> {
-  return Response.json(data)
-  // const url = new URL(request.url)
-  // const ids = url.searchParams.get('ids') ?? ''
-  //
-  // const response = await fetch(`https://pro-api.coinmarketcap.com/v2/cryptocurrency/info${ids}`, {
-  //   headers: {
-  //     'X-CMC_PRO_API_KEY': API_KEY ?? '',
-  //   },
-  // })
-  //
-  // if (!response.ok) {
-  //   const errorText = await response.text()
-  //   return Response.json({ error: errorText }, { status: response.status })
-  // }
-  //
-  // const res: CoinMarketCapResponse = (await response.json()) as CoinMarketCapResponse
-  // return Response.json(res.data)
+  // return Response.json(data)
+  const url = new URL(request.url)
+  const ids = url.searchParams.get('ids') ?? ''
+
+  // CoinMarketCap expects the ids in a query param, e.g. ?id=1,1027
+  const response = await fetch(
+    `https://pro-api.coinmarketcap.com/v2/cryptocurrency/info?id=${encodeURIComponent(ids)}`,
+    {
+      headers: {
+        'X-CMC_PRO_API_KEY': API_KEY ?? '',
+      },
+    }
+  )
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    return Response.json({ error: errorText }, { status: response.status })
+  }
+
+  const json = (await response.json()) as CoinMarketCapInfoResponse
+  const resData = json.data
+  return Response.json(resData)
 }
 
 const data: CoinMarketCapInfoResponse = {

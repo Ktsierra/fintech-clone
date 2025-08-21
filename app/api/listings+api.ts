@@ -1,21 +1,23 @@
-import { type CoinMarketCapListingsResponse } from '@/interfaces/crypto'
+import { type CoinMarketCapResponse, type CoinMarketCapListingsResponse } from '@/interfaces/crypto'
 const API_KEY = process.env.CRYPTO_API_KEY
 
 export async function GET(request: Request): Promise<Response> {
-  return Response.json(data)
-  // const url = new URL(request.url)
-  // const limit = url.searchParams.get('limit') ?? '5'
-  //
-  // const response = await fetch(
-  //   `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=${limit}`,
-  //   {
-  //     headers: {
-  //       'X-CMC_PRO_API_KEY': API_KEY ?? '',
-  //     },
-  //   }
-  // )
-  // const res: CoinMarketCapResponse = (await response.json()) as CoinMarketCapResponse
-  // return Response.json(res)
+  // return Response.json(data)
+  const url = new URL(request.url)
+  const limit = url.searchParams.get('limit') ?? '5'
+
+  const response = await fetch(
+    `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=${limit}`,
+    {
+      headers: {
+        'X-CMC_PRO_API_KEY': API_KEY ?? '',
+      },
+    }
+  )
+
+  const json = (await response.json()) as CoinMarketCapListingsResponse
+  const res = json.data
+  return Response.json(res)
 }
 
 const data: CoinMarketCapListingsResponse = [

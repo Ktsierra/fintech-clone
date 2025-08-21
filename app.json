@@ -51,6 +51,19 @@
           "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
         }
       ],
+      [
+        "@howincodes/expo-dynamic-app-icon",
+        {
+          "dark": {
+            "ios": "./assets/images/icon-dark.png",
+            "android": "./assets/images/icon-dark.png"
+          },
+          "vivid": {
+            "ios": "./assets/images/icon-vivid.png",
+            "android": "./assets/images/icon-vivid.png"
+          }
+        }
+      ],
       "expo-secure-store"
     ],
     "experiments": {
