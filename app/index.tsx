@@ -6,7 +6,7 @@ import { useVideoPlayer, type VideoSource, VideoView } from 'expo-video'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 
 export default function VideoScreen() {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-require-imports
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const videoSource: VideoSource = require('../assets/videos/intro.mp4')
   const player = useVideoPlayer(videoSource, (player) => {
     player.loop = true
